@@ -50,3 +50,6 @@ class Venue_amenity(models.Model): # associative entity
 
     def __str__(self):
         return f"{self.venue.name} - {self.amenity.type}"
+    
+    class Meta:
+        verbose_name_plural = "Venue Amenities"
