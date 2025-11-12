@@ -29,7 +29,7 @@ class AmenityAdmin(admin.ModelAdmin):
 
 # TODO: do you think we should not register this, and just use inlines instead?
 class VenueAmenityAdmin(admin.ModelAdmin):
-    list_display = ('venue', 'amenity',)
+    list_display = ('venue', 'amenity', 'quantity',)
     search_fields = ('venue__name', 'amenity__type',)
 
 admin.site.register(Building, BuildingAdmin)
