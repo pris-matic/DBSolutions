@@ -1,14 +1,26 @@
 from django.db import models
 
+class District(models.Model):
+    '''
+    ## Represents a district which is always in one city.
+    '''
+    name = models.CharField(max_length=255, unique=True) # Based on assumption that district names are unique and 
+    city = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+    
+    def get_city(self):
+        return self.city
+
 class Building(models.Model):
     '''
     ## The buildings that State Spaces own in which 
     ## the venues they offer their customers are located. 
     '''
-    name = models.CharField(max_length=255)
-    street = models.TextField()
-    district = models.TextField()
-    city = models.TextField()
+    name = models.CharField(max_length=255, unique=True)
+    street = models.CharField(max_length=255)
+    district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='buildings')
 
     def __str__(self):
         return self.name
@@ -16,7 +28,7 @@ class Building(models.Model):
 class Venue(models.Model):
     '''
     ## Venues that State Spaces own. 
-    ### Availability of each venue depends if it is currently being renovated.
+    ## Availability of each venue depends if it is currently being renovated.
     '''
     name = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
