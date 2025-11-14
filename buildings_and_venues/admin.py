@@ -28,6 +28,7 @@ class AmenityAdmin(admin.ModelAdmin):
     search_fields = ('type',)
 
 # TODO: do you think we should not register this, and just use inlines instead?
+# I think we can opt not to na, but baka we can add the inline as well to AmenityAdmin.
 class VenueAmenityAdmin(admin.ModelAdmin):
     list_display = ('venue', 'amenity', 'quantity',)
     search_fields = ('venue__name', 'amenity__type',)
