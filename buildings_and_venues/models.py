@@ -18,7 +18,7 @@ class Building(models.Model):
     ## The buildings that State Spaces own in which 
     ## the venues they offer their customers are located. 
     '''
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255, unique=True) # Business rule
     street = models.CharField(max_length=255)
     district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='buildings')
 
@@ -30,7 +30,7 @@ class Venue(models.Model):
     ## Venues that State Spaces own. 
     ## Availability of each venue depends if it is currently being renovated.
     '''
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True) # Business rule
     type = models.CharField(max_length=255)
     capacity = models.IntegerField()
     venue_floor_area = models.IntegerField()
