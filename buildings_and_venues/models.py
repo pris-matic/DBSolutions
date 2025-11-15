@@ -44,7 +44,7 @@ class Amenity(models.Model):
     '''
     ## Amenities that State Spaces provide for each venue/building.
     '''
-    type = models.CharField(max_length=255) # name of the amenity
+    type = models.CharField(max_length=255) # Name of the amenity
     description = models.TextField()
 
     def __str__(self):
@@ -53,7 +53,7 @@ class Amenity(models.Model):
     class Meta:
         verbose_name_plural = "Amenities"
 
-class Venue_amenity(models.Model): # associative entity
+class VenueAmenity(models.Model): # Associative entity
     '''
     ## Junction table for many-to-many relationship between venues and amenities.
     '''
@@ -66,3 +66,4 @@ class Venue_amenity(models.Model): # associative entity
     
     class Meta:
         verbose_name_plural = "Venue Amenities"
+        unique_together = [['venue', 'amenity']] # Ensures entries are unique, query would point you to one record that can just be updated/deleted
