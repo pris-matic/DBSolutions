@@ -52,6 +52,7 @@ class VenueAmenityAdmin(admin.ModelAdmin):
     list_display = ('venue', 'amenity', 'quantity',)
     search_fields = ('venue__name', 'amenity__type',)
 
+admin.site.register(District, DistrictAdmin)
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(Venue, VenueAdmin)
 admin.site.register(Amenity, AmenityAdmin)
