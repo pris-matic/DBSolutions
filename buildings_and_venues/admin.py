@@ -2,13 +2,13 @@ from django.contrib import admin
 from .models import District, Building, Venue, Amenity, VenueAmenity
 
 # Inlines
-class VenueInline(admin.TabularInline):
+class VenueInline(admin.TabularInLine):
     model = Venue
     extra = 1
     fields = ('name', 'type', 'capacity', 'under_renovation',)
     show_change_link = True
 
-class VenueAmenityForVenueInline(admin.TabularInline):
+class VenueAmenityForVenueInline(admin.TabularInLine):
     model = VenueAmenity
     extra = 1
     autocomplete_fields = ['amenity']
