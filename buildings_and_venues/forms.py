@@ -57,7 +57,7 @@ class AmenityForm(forms.ModelForm):
             'type': forms.TextInput(attrs={
                 'placeholder': 'Enter amenity type'
             }),
-            'description': forms.TextArea(attrs={
+            'description': forms.Textarea(attrs={
                 'placeholder': 'Enter amenity description...'
             }),
         }
