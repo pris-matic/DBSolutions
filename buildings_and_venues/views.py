@@ -50,3 +50,14 @@ def add_amenity(request):
     return render(request, 'buildings_and_venues/add_amenity.html', {
         'amenity_form': form
     })
+
+def detailed_venue(request, id):
+    chosen_venue = Venue.objects.get(id=id)
+    neighboring_venues = Venue.objects.filter(building=chosen_venue.building)
+    amenities = VenueAmenity.objects.filter(venue=chosen_venue)
+    
+    return render(request, 'buildings_and_venues/detailed_venue.html', {
+        'venue': chosen_venue,
+        'neighboring_venues': neighboring_venues,
+        'amenities': amenities 
+    })
