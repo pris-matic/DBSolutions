@@ -25,3 +25,28 @@ def add_building(request):
         'building_form': form
     })
 
+def add_venue(request):
+    if request.method == 'POST':
+        form = VenueForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_dashboard')
+    else:
+        form = VenueForm()
+    
+    return render(request, 'buildings_and_venues/add_venue.html', {
+        'venue_form': form
+    })
+
+def add_amenity(request):
+    if request.method == 'POST':
+        form = AmenityForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_dashboard')
+    else:
+        form = AmenityForm()
+    
+    return render(request, 'buildings_and_venues/add_amenity.html', {
+        'amenity_form': form
+    })
