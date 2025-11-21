@@ -5,21 +5,63 @@
 
     <title>{% block title %}{% endblock %}</title>
     {% block appcss %}{% endblock %}
+    <style>
+        .nav-tabs .nav-link {
+            color: #6b7280;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            border-color: transparent;
+            color: #374151;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #2563eb;
+            background-color: transparent;
+            border-bottom: 2px solid #2563eb;
+        }
+        
+        .nav-tabs {
+            border-bottom: 1px solid #e5e7eb;
+        }
+    </style>
 </head>
 <body>
 
     <!-- navbar -->
-    <nav class="navbar sticky-top navbar-expand bg-dark" data-bs-theme="dark">
-        <div class="container-fluid">
-            <ul class="navbar-nav">
-	        {% with request.resolver_match.app_name as app_name %}
+    <div class="bg-white border-bottom">
+        <div class="container-fluid px-5 py-3">
+            <!-- Header with Title and Action Buttons -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="h2 fw-bold text-dark mb-0">State Spaces</h1>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs">
                 <li class="nav-item">
-			<a class="nav-link rounded {% if app_name == 'buildings_and_venues' %}text-bg-primary active{% endif %}" href="{% url 'buildings_and_venues:homepage' %}"> Home </a>
+                    <a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" 
+                       href="{% url 'buildings_and_venues:admin_dashboard' %}">
+                        Dashboard
+                    </a>
                 </li>
-            {% endwith %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'add_building' %}active{% endif %}" 
+                       href="{% url 'buildings_and_venues:add_building' %}">
+                        Add Building
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'add_venue' %}active{% endif %}" 
+                       href="{% url 'buildings_and_venues:add_venue' %}">
+                        Add Venue
+                    </a>
+                </li>
             </ul>
         </div>
-    </nav>
+    </div>
     
     <!-- content -->
     <main class="container-md">
