@@ -70,6 +70,43 @@ def edit_venue(request, id):
         'venue': venue
     })
 
+def detailed_venue(request, id):
+    chosen_venue = Venue.objects.get(id=id)
+    neighboring_venues = Venue.objects.filter(building=chosen_venue.building)
+    venue_amenities = VenueAmenity.objects.filter(venue=chosen_venue)
+    
+    if request.method == 'POST':
+        amenity_option = request.POST.get('amenity_option')
+        if amenity_option == 'new':
+            amenity_form = AmenityForm(request.POST)
+            if amenity_form.is_valid():
+                amenity = amenity_form.save()
+                venue_amenity_form = VenueAmenityForm(request.POST)
+                if venue_amenity_form.is_valid():
+                    venueamenity = venue_amenity_form.save(commit=False)
+                    venueamenity.amenity = amenity
+                    venueamenity.save()
+                    return redirect('detailed_venue', id=id)
+        else:
+            venue_amenity_form = VenueAmenityForm(request.POST)
+            if venue_amenity_form.is_valid():
+                venue_amenity_form.save()
+                return redirect('detailed_venue', id=id)
+    else:
+        amenity_form = AmenityForm()
+        venue_amenity_form = VenueAmenityForm()
+    
+    amenities = Amenity.objects.all()
+
+    return render(request, 'buildings_and_venues/detailed_venue.html', {
+        'venue': chosen_venue,
+        'neighboring_venues': neighboring_venues,
+        'venue_amenities': venue_amenities,
+        'amenities': amenities,
+        'amenity_form': amenity_form,
+        'venue_amenity_form': venue_amenity_form
+    })
+
 def add_amenity(request):
     if request.method == 'POST':
         form = AmenityForm(request.POST)
@@ -83,39 +120,22 @@ def add_amenity(request):
         'amenity_form': form
     })
 
-def detailed_venue(request, id):
-    chosen_venue = Venue.objects.get(id=id)
-    neighboring_venues = Venue.objects.filter(building=chosen_venue.building)
-    venue_amenities = VenueAmenity.objects.filter(venue=chosen_venue)
-    
+def delete_venue_amenity(request, venue_id, amenity_id):
     if request.method == 'POST':
-        amenity_option = request.POST.get('amenity_option')
-        if amenity_option == 'new':
-            amenity_form = AmenityForm(request.POST)
-            if amenity_form.is_valid():
-                amenity = amenity_form.save()
-                venueamenity_form = VenueAmenityForm(request.POST)
-                if venueamenity_form.is_valid():
-                    venueamenity = venueamenity_form.save(commit=False)
-                    venueamenity.amenity = amenity
-                    venueamenity.save()
-                    return redirect('detailed_venue', id=id)
-        else:
-            venueamenity_form = VenueAmenityForm(request.POST)
-            if venueamenity_form.is_valid():
-                venueamenity_form.save()
-                return redirect('detailed_venue', id=id)
-    else:
-        amenity_form = AmenityForm()
-        venueamenity_form = VenueAmenityForm()
-    
-    amenities = Amenity.objects.all()
+        VenueAmenity.objects.filter(venue_id=venue_id, amenity_id=amenity_id).delete()
+    return redirect('detailed_venue', id=venue_id)
 
-    return render(request, 'buildings_and_venues/detailed_venue.html', {
-        'venue': chosen_venue,
-        'neighboring_venues': neighboring_venues,
-        'venue_amenities': venue_amenities,
-        'amenities': amenities,
-        'amenity_form': amenity_form,
-        'venueamenity_form': venueamenity_form
+def edit_venue_amenity(request, venue_id, amenity_id):
+    venue_amenity = VenueAmenity.objects.get(venue_id=venue_id, amenity_id=amenity_id)
+    if request.method == 'POST':
+        form = VenueAmenityForm(request.POST, instance=venue_amenity)
+        if form.is_valid():
+            form.save()
+            return redirect('detailed_venue', id=venue_id)
+    else:
+        form = VenueAmenityForm(instance=venue_amenity)
+    
+    return render(request, 'buildings_and_venues/edit_venue_amenity.html', {
+        'form': form,
+        'venue_amenity': venue_amenity
     })
