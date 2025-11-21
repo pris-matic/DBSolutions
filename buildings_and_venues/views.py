@@ -13,6 +13,7 @@ def admin_dashboard(request):
     })
 
 def add_building(request):
+    districts = District.objects.all()
     if request.method == 'POST':
         district_option = request.POST.get('district_option')
         if district_option == 'new':
@@ -38,8 +39,6 @@ def add_building(request):
         district_form = DistrictForm()
         building_form = BuildingForm()
     
-    districts = District.objects.all()
-
     return render(request, 'buildings_and_venues/add_building.html', {
         'districts': districts,
         'district_form': district_form,
@@ -47,16 +46,39 @@ def add_building(request):
     })
 
 def add_venue(request):
+    buildings = Building.objects.all()
+    amenities = Amenity.objects.all()
     if request.method == 'POST':
+        chosen_building_id = request.POST.get('building')
+        chosen_building = Building.objects.get(id=chosen_building_id)
         form = VenueForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('admin_dashboard')
+            venue = form.save(commit=False)
+            venue.building = chosen_building
+            if request.POST.get('under_renovation') == 'yes':
+                venue.under_renovation = True
+            else:
+                venue.under_renovation = False
+            venue.save()
+
+            # Comment out for now since handle this later on after data has been added 
+            # for amenity in amenities:
+            #     quantity = request.POST.get(f'quantity_{amenity.id}')
+            #     if int(quantity) > 0:
+            #         VenueAmenity.objects.create(
+            #             venue=venue,
+            #             amenity=amenity,
+            #             quantity=quantity
+            #         )
+
+            return redirect('detailed_venue', id=venue.id)
     else:
         form = VenueForm()
-    
+
     return render(request, 'buildings_and_venues/add_venue.html', {
-        'venue_form': form
+        'venue_form': form,
+        'buildings': buildings,
+        'amenities': amenities
     })
 
 def edit_venue(request, id):
@@ -75,6 +97,7 @@ def edit_venue(request, id):
     })
 
 def detailed_venue(request, id=1):
+    amenities = Amenity.objects.all()
     chosen_venue = Venue.objects.get(id=id)
     neighboring_venues = Venue.objects.filter(building=chosen_venue.building)
     venue_amenities = VenueAmenity.objects.filter(venue=chosen_venue)
@@ -99,8 +122,6 @@ def detailed_venue(request, id=1):
     else:
         amenity_form = AmenityForm()
         venue_amenity_form = VenueAmenityForm()
-    
-    amenities = Amenity.objects.all()
 
     return render(request, 'buildings_and_venues/detailed_venue.html', {
         'venue': chosen_venue,
