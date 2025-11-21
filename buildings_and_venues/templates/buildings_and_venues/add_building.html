@@ -50,12 +50,14 @@
 		const option = document.querySelector('input[name="district_option"]:checked').value;
 		const existingSection = document.getElementById('existing-district-section');
 		const newSection = document.getElementById('new-district-section');
+		const existSelect = document.getElementById('district');
 		
 		// This if else statement toggles the display of showing the existing district dropdown or the 
 		// new district form fields.
 		if (option === 'new') {
 			existingSection.style.display = 'none';
 			newSection.style.display = 'block';
+			existSelect.required = false;
 		} 
 		else {
 			existingSection.style.display = 'block';
