@@ -55,6 +55,21 @@ def add_venue(request):
         'venue_form': form
     })
 
+def edit_venue(request, id):
+    venue = Venue.objects.get(id=id)
+    if request.method == 'POST':
+        form = VenueForm(request.POST, instance=venue)
+        if form.is_valid():
+            form.save()
+            return redirect('detailed_venue', id=id)
+    else:
+        form = VenueForm(instance=venue)
+    
+    return render(request, 'buildings_and_venues/edit_venue.html', {
+        'venue_form': form,
+        'venue': venue
+    })
+
 def add_amenity(request):
     if request.method == 'POST':
         form = AmenityForm(request.POST)
