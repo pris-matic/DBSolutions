@@ -70,7 +70,7 @@ def edit_venue(request, id):
         'venue': venue
     })
 
-def detailed_venue(request, id):
+def detailed_venue(request, id=1):
     chosen_venue = Venue.objects.get(id=id)
     neighboring_venues = Venue.objects.filter(building=chosen_venue.building)
     venue_amenities = VenueAmenity.objects.filter(venue=chosen_venue)
