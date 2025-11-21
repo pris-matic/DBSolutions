@@ -2,69 +2,69 @@
 {% load static %}
 
 {% block content %}
-<h2>Add New Building</h2>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="alert alert-primary">
-    <label class="form-label fw-bold">District Location</label>
-    <div class="d-flex gap-3 mt-2">
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="district_option" value="existing" id="radio-existing" checked onchange="toggleDistrictFields()">
-        <label class="form-check-label fw-semibold" for="radio-existing">
-          Existing District
-        </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="district_option" value="new" id="radio-new" onchange="toggleDistrictFields()">
-        <label class="form-check-label fw-semibold" for="radio-new">
-          New District
-        </label>
-      </div>
-    </div>
-  </div>
-  <div class="mb-3 alert alert-secondary">
-    <!-- Existing District Dropdown (shown by default) -->
-    <div id="existing-district-section" class="mb-3">
-			<label for="district" class="form-label">Select District</label>
-			<select name="district" id="district" class="form-select" required>
-				<option value="">Choose a district...</option>
-				{% for district in districts %}
-					<option value="{{ district.id }}">
-						{{ district.name }} - {{ district.city }}
-					</option>
-				{% endfor %}
-			</select>
-    </div>
-    <!-- New District Fields (hidden by default) -->
-    <div id="new-district-section" style="display: none;">
-			<div class="mb-3">
-				{{ district_form.as_p }}
+	<h2 class="py-3">Add New Building</h2>
+	<form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<div class="alert alert-primary">
+			<label class="form-label fw-bold">District Location</label>
+			<div class="d-flex gap-3 mt-2">
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="district_option" value="existing" id="radio-existing" checked onchange="toggleDistrictFields()">
+					<label class="form-check-label fw-semibold" for="radio-existing">
+						Existing District
+					</label>
+				</div>
+				<div class="form-check">
+					<input class="form-check-input" type="radio" name="district_option" value="new" id="radio-new" onchange="toggleDistrictFields()">
+					<label class="form-check-label fw-semibold" for="radio-new">
+						New District
+					</label>
+				</div>
 			</div>
 		</div>
-		{{ building_form.as_p }}
-		<button type="Submit" class="btn btn-primary">Create Building</button>
-	</div>
-</form>
-<script>
-function toggleDistrictFields() {
-  const option = document.querySelector('input[name="district_option"]:checked').value;
-  const existingSection = document.getElementById('existing-district-section');
-  const newSection = document.getElementById('new-district-section');
-  
-	// This if else statement toggles the display of showing the existing district dropdown or the 
-	// new district form fields.
-  if (option === 'new') {
-    existingSection.style.display = 'none';
-    newSection.style.display = 'block';
-  } 
-  else {
-    existingSection.style.display = 'block';
-    newSection.style.display = 'none';
-  }
-}
+		<div class="mb-3 alert alert-secondary">
+			<!-- Existing District Dropdown (shown by default) -->
+			<div id="existing-district-section" class="mb-3">
+				<label for="district" class="form-label">Select District</label>
+				<select name="district" id="district" class="form-select" required>
+					<option value="">Choose a district...</option>
+					{% for district in districts %}
+						<option value="{{ district.id }}">
+							{{ district.name }} - {{ district.city }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+			<!-- New District Fields (hidden by default) -->
+			<div id="new-district-section" style="display: none;">
+				<div class="mb-3">
+					{{ district_form.as_p }}
+				</div>
+			</div>
+			{{ building_form.as_p }}
+			<button type="Submit" class="btn btn-primary">Create Building</button>
+		</div>
+	</form>
+	<script>
+	function toggleDistrictFields() {
+		const option = document.querySelector('input[name="district_option"]:checked').value;
+		const existingSection = document.getElementById('existing-district-section');
+		const newSection = document.getElementById('new-district-section');
+		
+		// This if else statement toggles the display of showing the existing district dropdown or the 
+		// new district form fields.
+		if (option === 'new') {
+			existingSection.style.display = 'none';
+			newSection.style.display = 'block';
+		} 
+		else {
+			existingSection.style.display = 'block';
+			newSection.style.display = 'none';
+		}
+	}
 
-document.addEventListener('DOMContentLoaded', function() {
-	toggleDistrictFields();
-});
-</script>
+	document.addEventListener('DOMContentLoaded', function() {
+		toggleDistrictFields();
+	});
+	</script>
 {% endblock %}
