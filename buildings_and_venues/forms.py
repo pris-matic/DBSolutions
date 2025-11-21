@@ -22,9 +22,10 @@ class DistrictForm(forms.ModelForm):
 class BuildingForm(forms.ModelForm):
     class Meta:
         model = Building
-        fields = ['name', 'street']
+        fields = ['name', 'street', 'num_floors']
         labels = {
-            'name': 'Building Name:'
+            'name': 'Building Name:',
+            'num_floors': 'Number of Floors'
         }
         widgets = {
             'name': forms.TextInput(attrs={
@@ -35,12 +36,17 @@ class BuildingForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Enter street'
             }),
+            'num_floors': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter # of floors',
+                'min': 1
+			})
         }
 
 class VenueForm(forms.ModelForm):
     class Meta:
         model = Venue
-        fields = ['name', 'type', 'capacity', 'venue_floor_area']
+        fields = ['name', 'type', 'capacity', 'floor', 'venue_floor_area']
         labels = {
             'name': 'Venue Name:',
             'type': 'Venue Type:',
@@ -62,6 +68,11 @@ class VenueForm(forms.ModelForm):
                 'placeholder': 'Enter # of people',
                 'min': 1
             }),
+            'floor': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter floor number',
+                'min': 1
+			}),
             'venue_floor_area': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter floor area',

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 class District(models.Model):
     '''
@@ -20,6 +21,7 @@ class Building(models.Model):
     '''
     name = models.CharField(max_length=255, unique=True) # Business rule
     street = models.CharField(max_length=255)
+    num_floors = models.IntegerField(validators=[MinValueValidator(1)])
     district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='buildings')
 
     def __str__(self):
@@ -32,8 +34,9 @@ class Venue(models.Model):
     '''
     name = models.CharField(max_length=255, unique=True) # Business rule
     type = models.CharField(max_length=255)
-    capacity = models.IntegerField()
-    venue_floor_area = models.IntegerField()
+    capacity = models.IntegerField(validators=[MinValueValidator(1)])
+    floor = models.IntegerField(validators=[MinValueValidator(1)])
+    venue_floor_area = models.IntegerField(validators=[MinValueValidator(1)])
     under_renovation = models.BooleanField(default=False)
     building = models.ForeignKey(Building, on_delete=models.CASCADE, related_name='venues')
 
@@ -59,7 +62,7 @@ class VenueAmenity(models.Model): # Associative entity
     '''
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE)
     amenity = models.ForeignKey(Amenity, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
 
     def __str__(self):
         return f"{self.venue.name} - {self.amenity.type}"
