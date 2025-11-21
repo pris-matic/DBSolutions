@@ -2,15 +2,40 @@
 {% load static %}
 
 {% block content %}
-    <ul>
-        <h2> Lorem Ipsum </h2>
-    </ul>
-    <h2>Add Form</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ venue_form.as_p }}
-        <div class="submit-btn">
-            <button type="Submit">Create Venue</button>
-        </div>
-    </form>
+  <h2 class="py-3">Add New Venue</h2>
+	<form method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<div class="mb-3 alert alert-secondary">
+			<div class="mb-3">
+				<label for="building" class="form-label">Select Building</label>
+				<select name="building" id="building" class="form-select" required>
+					<option value="">Choose a building...</option>
+					{% for building in buildings %}
+						<option value="{{ building.id }}">
+							{{ building.name }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+      {{ venue_form.as_p }}
+      <div class="mb-3 alert alert-light">
+        <input class="form-check-input" type="checkbox" name="under_renovation" value="yes" id="under_renovation">
+        <label class="form-check-label px-2" for="under_renovation">Venue is under renovation</label>
+      </div> 
+			<button type="Submit" class="btn btn-primary">Create Venue</button>
+		</div>
+    <!-- <h2>Add Amenities (Optional)</h2>
+    <div class="mb-3 alert alert-light">
+      <div class="mb-3">
+        {% for amenity in amenities %}
+          <div class="col-md-6 mb-2">
+            <div class="d-flex justify-content-between align-items-center border p-2 rounded">
+              <label class="fw-bold">{{ amenity.amenity_type }}</label>
+              <input type="number" name="amenity_qty_{{ amenity.id }}" class="form-control w-25" min="0" placeholder="0">
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div> -->
+	</form>
 {% endblock %}
