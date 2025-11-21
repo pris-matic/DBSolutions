@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import homepage, admin_dashboard, add_building, add_venue, add_amenity, detailed_venue
+from .views import homepage, admin_dashboard, add_district, add_building, add_venue, add_amenity, detailed_venue
 
 urlpatterns = [
     path('home/', homepage, name='homepage'),

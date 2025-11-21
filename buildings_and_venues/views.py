@@ -14,15 +14,32 @@ def admin_dashboard(request):
 
 def add_building(request):
     if request.method == 'POST':
-        form = BuildingForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('admin_dashboard')
+        district_option = request.POST.get('district_option')
+        if district_option == 'new':
+            district_form = DistrictForm(request.POST)
+            if district_form.is_valid():
+                district = district_form.save()
+                building_form = BuildingForm(request.POST)
+                if building_form.is_valid():
+                    building = building_form.save(commit=False)
+                    building.district = district
+                    building.save()
+                    return redirect('admin_dashboard')
+        else:
+            building_form = BuildingForm(request.POST)
+            if building_form.is_valid():
+                building_form.save()
+                return redirect('admin_dashboard')
     else:
-        form = BuildingForm()
+        district_form = DistrictForm()
+        building_form = BuildingForm()
     
+    districts = District.objects.all()
+
     return render(request, 'buildings_and_venues/add_building.html', {
-        'building_form': form
+        'districts': districts,
+        'district_form': district_form,
+        'building_form': building_form,
     })
 
 def add_venue(request):
@@ -54,10 +71,36 @@ def add_amenity(request):
 def detailed_venue(request, id):
     chosen_venue = Venue.objects.get(id=id)
     neighboring_venues = Venue.objects.filter(building=chosen_venue.building)
-    amenities = VenueAmenity.objects.filter(venue=chosen_venue)
+    venue_amenities = VenueAmenity.objects.filter(venue=chosen_venue)
     
+    if request.method == 'POST':
+        amenity_option = request.POST.get('amenity_option')
+        if amenity_option == 'new':
+            amenity_form = AmenityForm(request.POST)
+            if amenity_form.is_valid():
+                amenity = amenity_form.save()
+                venueamenity_form = VenueAmenityForm(request.POST)
+                if venueamenity_form.is_valid():
+                    venueamenity = venueamenity_form.save(commit=False)
+                    venueamenity.amenity = amenity
+                    venueamenity.save()
+                    return redirect('detailed_venue', id=id)
+        else:
+            venueamenity_form = VenueAmenityForm(request.POST)
+            if venueamenity_form.is_valid():
+                venueamenity_form.save()
+                return redirect('detailed_venue', id=id)
+    else:
+        amenity_form = AmenityForm()
+        venueamenity_form = VenueAmenityForm()
+    
+    amenities = Amenity.objects.all()
+
     return render(request, 'buildings_and_venues/detailed_venue.html', {
         'venue': chosen_venue,
         'neighboring_venues': neighboring_venues,
-        'amenities': amenities 
+        'venue_amenities': venue_amenities,
+        'amenities': amenities,
+        'amenity_form': amenity_form,
+        'venueamenity_form': venueamenity_form
     })
