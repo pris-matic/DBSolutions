@@ -16,13 +16,14 @@ def admin_dashboard(request):
     district_filter = request.GET.get('district', '')
     
     if search:
-        buildings = buildings.filter(Q(name__icontains=search) | Q(building__name__icontains=search)).distinct()
+        buildings = buildings.filter(Q(name__icontains=search) | Q(venues__name__icontains=search)).distinct()
     
     if city_filter and not city_filter == 'All Cities':
         buildings = buildings.filter(district__city=city_filter)
 
     if district_filter and not district_filter == 'All Districts':
         buildings = buildings.filter(district__id=district_filter)
+        district_filter = int(district_filter)
 
     return render(request, 'buildings_and_venues/admin_dashboard.html', {
         'buildings': buildings,
