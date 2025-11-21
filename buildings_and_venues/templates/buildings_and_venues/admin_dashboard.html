@@ -2,24 +2,62 @@
 {% load static %}
 
 {% block content %}
-    <ul>
-        <h2> Lorem Ipsum </h2>
-    </ul>
-    {% for building in buildings %}
-    <div class="building-card">
-        <h2>{{ building.name }} ({{ building.district.city }})</h2>
-        
-        <ul>
-            {% for venue in building.venues.all %}
-                <li>
-                    {{ venue.name }} - Capacity: {{ venue.capacity }}
-                    <a href="#">Edit</a>
-                </li>
-            {% empty %}
-                <li>No venues in this building.</li>
+  <h2 class="py-3">Buildings and Venues</h2>
+	<form method="get">
+		{% csrf_token %}
+		<div class="mb-3 alert alert-secondary">
+			<div class="mb-3">
+				<!-- Search/Filter Bar -->
+    <div class="d-flex">
+      <div class="flex-grow-1">
+        <input class="form-control" type="text" name="search" placeholder="Search buildings or venues..." id="search">
+      </div>
+      <div>
+        <select class="form-select" name="city" id="city-filter">
+            <option>All Cities</option>
+            {% for city in cities %}
+              <option value="{{ city }}" {% if current_city == city %}selected{% endif %}> {{ city }} </option>
             {% endfor %}
-        </ul>
+        </select>
+      </div>
+      <div>
+        <select class="form-select" name="district" id="district-filter">
+          <option>All Districts</option>
+          {% for district in districts %}
+            <option value="{{ district.id }}" {% if current_district == district.id %}selected{% endif %}> {{ district.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <button type="Submit" class="btn btn-dark">Search</button>
+      </div>
     </div>
-    <hr>
+  </form>
+
+    <!-- Buildings List -->
+    {% for building in buildings %}
+    <div class="d-flex card">
+        <div class="building-header">
+            <div class="building-info">
+                <h3>{{ building.name }}</h3>
+                <p>{{ building.street }}, {{ building.district.name }}, {{ building.district.city }}</p>
+                <span class="badge">{{ building.venues.count }} venues</span>
+            </div>
+            <a href="" class="btn-edit">Edit</a>
+        </div>
+        <div class="venues-grid">
+            {% for venue in building.venues.all %}
+            <a href="{% url 'buildings_and_venues:detailed_venue' venue.id %}" class="venue-card">
+                <h4>{{ venue.name }}</h4>
+                {% if venue.under_renovation %}
+                <span class="badge badge-warning">Under Renovation</span>
+                {% endif %}
+                <p>Type: {{ venue.type }}</p>
+                <p>Capacity: {{ venue.capacity }} people</p>
+                <p>Area: {{ venue.venue_floor_area }} sqm</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
     {% endfor %}
 {% endblock %}
