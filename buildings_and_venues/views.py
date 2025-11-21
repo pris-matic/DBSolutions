@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.db.models import Q
 from .models import District, Building, Venue, Amenity, VenueAmenity
 from .forms import DistrictForm, BuildingForm, VenueForm, AmenityForm, VenueAmenityForm
 
@@ -6,10 +7,31 @@ def homepage(request):
     return render(request,'buildings_and_venues/homepage.html')
 
 def admin_dashboard(request):
-    buildings = Building.objects.prefetch_related('venues').all()
-        
+    buildings = Building.objects.select_related('district').prefetch_related('venues').all()
+    cities = District.objects.values_list('city', flat=True).distinct().order_by('city')
+    districts = District.objects.all().order_by('name')
+
+    search = request.GET.get('search', '')
+    city_filter = request.GET.get('city', '')
+    district_filter = request.GET.get('district', '')
+    
+    if search:
+        buildings = buildings.filter(Q(name__icontains=search) | Q(venues__name__icontains=search)).distinct()
+    
+    if city_filter and not city_filter == 'All Cities':
+        buildings = buildings.filter(district__city=city_filter)
+
+    if district_filter and not district_filter == 'All Districts':
+        buildings = buildings.filter(district__id=district_filter)
+        district_filter = int(district_filter)
+
     return render(request, 'buildings_and_venues/admin_dashboard.html', {
-        'buildings': buildings
+        'buildings': buildings,
+        'cities': cities,
+        'districts': districts,
+        'current_search': search,
+        'current_city': city_filter,
+        'current_district': district_filter
     })
 
 def add_building(request):
@@ -17,27 +39,27 @@ def add_building(request):
     if request.method == 'POST':
         district_option = request.POST.get('district_option')
         if district_option == 'new':
-            district_form = DistrictForm(request.POST)
+            district_form = DistrictForm(request.POST, prefix='district')
             if district_form.is_valid():
                 district = district_form.save()
-                building_form = BuildingForm(request.POST)
+                building_form = BuildingForm(request.POST, prefix='building')
                 if building_form.is_valid():
                     building = building_form.save(commit=False)
                     building.district = district
                     building.save()
-                    return redirect('admin_dashboard')
+                    return redirect('buildings_and_venues:admin_dashboard')
         else:
             chosen_district_id = request.POST.get('district')
             chosen_district = District.objects.get(id=chosen_district_id)
-            building_form = BuildingForm(request.POST)
+            building_form = BuildingForm(request.POST, prefix='building')
             if building_form.is_valid():
-                building_form.save(commit=False)
+                building = building_form.save(commit=False)
                 building.district = chosen_district
                 building.save()
-                return redirect('admin_dashboard')
+                return redirect('buildings_and_venues:admin_dashboard')
     else:
-        district_form = DistrictForm()
-        building_form = BuildingForm()
+        district_form = DistrictForm(prefix='district')
+        building_form = BuildingForm(prefix='building')
     
     return render(request, 'buildings_and_venues/add_building.html', {
         'districts': districts,
@@ -71,7 +93,7 @@ def add_venue(request):
             #             quantity=quantity
             #         )
 
-            return redirect('detailed_venue', id=venue.id)
+            return redirect('buildings_and_venues:detailed_venue', id=venue.id)
     else:
         form = VenueForm()
 
@@ -87,7 +109,7 @@ def edit_venue(request, id):
         form = VenueForm(request.POST, instance=venue)
         if form.is_valid():
             form.save()
-            return redirect('detailed_venue', id=id)
+            return redirect('buildings_and_venues:detailed_venue', id=id)
     else:
         form = VenueForm(instance=venue)
     
@@ -113,12 +135,12 @@ def detailed_venue(request, id=1):
                     venueamenity = venue_amenity_form.save(commit=False)
                     venueamenity.amenity = amenity
                     venueamenity.save()
-                    return redirect('detailed_venue', id=id)
+                    return redirect('buildings_and_venues:detailed_venue', id=id)
         else:
             venue_amenity_form = VenueAmenityForm(request.POST)
             if venue_amenity_form.is_valid():
                 venue_amenity_form.save()
-                return redirect('detailed_venue', id=id)
+                return redirect('buildings_and_venues:detailed_venue', id=id)
     else:
         amenity_form = AmenityForm()
         venue_amenity_form = VenueAmenityForm()
@@ -137,7 +159,7 @@ def add_amenity(request):
         form = AmenityForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('admin_dashboard')
+            return redirect('buildings_and_venues:admin_dashboard')
     else:
         form = AmenityForm()
     
@@ -148,7 +170,7 @@ def add_amenity(request):
 def delete_venue_amenity(request, venue_id, amenity_id):
     if request.method == 'POST':
         VenueAmenity.objects.filter(venue_id=venue_id, amenity_id=amenity_id).delete()
-    return redirect('detailed_venue', id=venue_id)
+    return redirect('buildings_and_venues:detailed_venue', id=venue_id)
 
 def edit_venue_amenity(request, venue_id, amenity_id):
     venue_amenity = VenueAmenity.objects.get(venue_id=venue_id, amenity_id=amenity_id)
@@ -156,7 +178,7 @@ def edit_venue_amenity(request, venue_id, amenity_id):
         form = VenueAmenityForm(request.POST, instance=venue_amenity)
         if form.is_valid():
             form.save()
-            return redirect('detailed_venue', id=venue_id)
+            return redirect('buildings_and_venues:detailed_venue', id=venue_id)
     else:
         form = VenueAmenityForm(instance=venue_amenity)
     

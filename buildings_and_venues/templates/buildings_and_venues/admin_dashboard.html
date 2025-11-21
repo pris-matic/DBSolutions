@@ -2,24 +2,86 @@
 {% load static %}
 
 {% block content %}
-    <ul>
-        <h2> Lorem Ipsum </h2>
-    </ul>
-    {% for building in buildings %}
-    <div class="building-card">
-        <h2>{{ building.name }} ({{ building.district.city }})</h2>
-        
-        <ul>
-            {% for venue in building.venues.all %}
-                <li>
-                    {{ venue.name }} - Capacity: {{ venue.capacity }}
-                    <a href="#">Edit</a>
-                </li>
-            {% empty %}
-                <li>No venues in this building.</li>
+  <div class="container py-4">
+    <h2 class="mb-4">Buildings and Venues</h2>
+    <div class="card p-3 mb-4 bg-light border-0">
+      <form method="get" class="row g-2">
+        <div class="col-6">
+          <input class="form-control" type="text" name="search" placeholder="Search buildings or venues..." value="{{ request.GET.search }}">
+        </div>
+        <div class="col-2">
+          <select class="form-select" name="city">
+            <option value="">All Cities</option>
+            {% for city in cities %}
+              <option value="{{ city }}" {% if current_city == city %}selected{% endif %}>{{ city }}</option>
             {% endfor %}
-        </ul>
+          </select>
+        </div>
+        <div class="col-2">
+          <select class="form-select" name="district">
+            <option value="">All Districts</option>
+            {% for district in districts %}
+              <option value="{{ district.id }}" {% if current_district == district.id %}selected{% endif %}>{{ district.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-2">
+          <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Search</button>
+        </div>
+      </form>
     </div>
-    <hr>
+    {% for building in buildings %}
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <div class="d-flex gap-3">
+              <div class="d-flex align-items-center justify-content-center rounded p-3" style="background-color: #e8f0fe; width: 60px; height: 60px;">
+                <i class="bi bi-building text-primary fs-4"></i>
+              </div>
+              <div>
+                <h3 class="fw-semibold mb-1">{{ building.name }}</h3>
+                <div class="text-muted">
+                  <i class="bi bi-geo-alt me-1"></i>
+                  {{ building.street }}, {{ building.district.name }}, {{ building.district.city }}
+                  
+                  <span class="badge bg-light text-secondary border ms-2">
+                    {{ building.venues.count }} venues
+                  </span>
+                </div>
+              </div>
+            </div>
+            <a href="#" class="text-decoration-none text-primary fw-semibold">
+              <i class="bi bi-pencil-square"></i> Edit
+            </a>
+          </div>
+          <hr>
+          <div class="d-flex flex-column gap-3">
+            {% for venue in building.venues.all %}
+            <a href="{% url 'buildings_and_venues:detailed_venue' venue.id %}" class="text-decoration-none text-dark">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h4 class="fw-semibold">{{ venue.name }}</h4>
+                      <p class="text-muted mb-2">Type: {{ venue.type }}</p>
+                      <div class="d-flex gap-3 text-secondary small">
+                        <span><i class="bi bi-people"></i> {{ venue.capacity }} people</span>
+                        <span><i class="bi bi-square"></i> {{ venue.venue_floor_area }} sqm</span> 
+                      </div>
+                    </div>
+                    {% if venue.under_renovation %}
+                      <div class="badge bg-warning text-dark bg-opacity-25 border border-warning">
+                        <i class="bi bi-wrench"></i> Renovation
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
     {% endfor %}
+  </div>
 {% endblock %}
