@@ -40,22 +40,33 @@ class BuildingForm(forms.ModelForm):
 class VenueForm(forms.ModelForm):
     class Meta:
         model = Venue
-        fields = ['name', 'type', 'capacity', 'venue_floor_area', 'under_renovation', 'building']
+        fields = ['name', 'type', 'capacity', 'venue_floor_area']
+        labels = {
+            'name': 'Venue Name:',
+            'type': 'Venue Type:',
+            'capacity': 'Venue Capacity:',
+            'venue_floor_area': 'Floor Area (in sqm):'
+            
+		}
         widgets = {
             'name': forms.TextInput(attrs={
+                'class': 'form-control',
                 'placeholder': 'Enter venue name'
             }),
             'type': forms.TextInput(attrs={
+                'class': 'form-control',
                 'placeholder': 'Enter venue type'
             }),
             'capacity': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter # of people',
                 'min': 1
             }),
             'venue_floor_area': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter floor area',
                 'min': 1
             }),
-            'under_renovation': forms.CheckboxInput(),
-            'building': forms.Select()
         }
 
 class AmenityForm(forms.ModelForm):
