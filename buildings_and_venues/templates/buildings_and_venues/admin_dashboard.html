@@ -1,0 +1,25 @@
+{% extends 'DBSolutions/base.html' %}
+{% load static %}
+
+{% block content %}
+    <ul>
+        <h2> Lorem Ipsum </h2>
+    </ul>
+    {% for building in buildings %}
+    <div class="building-card">
+        <h2>{{ building.name }} ({{ building.district.city }})</h2>
+        
+        <ul>
+            {% for venue in building.venues.all %}
+                <li>
+                    {{ venue.name }} - Capacity: {{ venue.capacity }}
+                    <a href="#">Edit</a>
+                </li>
+            {% empty %}
+                <li>No venues in this building.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <hr>
+    {% endfor %}
+{% endblock %}

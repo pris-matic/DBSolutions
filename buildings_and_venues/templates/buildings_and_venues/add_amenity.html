@@ -1,0 +1,16 @@
+{% extends 'DBSolutions/base.html' %}
+{% load static %}
+
+{% block content %}
+    <ul>
+        <h2> Lorem Ipsum </h2>
+    </ul>
+    <h2>Add Form</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ amenity_form.as_p }}
+        <div class="submit-btn">
+            <button type="Submit">Create Amenity</button>
+        </div>
+    </form>
+{% endblock %}
