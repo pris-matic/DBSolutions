@@ -26,9 +26,13 @@ def add_building(request):
                     building.save()
                     return redirect('admin_dashboard')
         else:
+            chosen_district_id = request.POST.get('district')
+            chosen_district = District.objects.get(id=chosen_district_id)
             building_form = BuildingForm(request.POST)
             if building_form.is_valid():
-                building_form.save()
+                building_form.save(commit=False)
+                building.district = chosen_district
+                building.save()
                 return redirect('admin_dashboard')
     else:
         district_form = DistrictForm()
