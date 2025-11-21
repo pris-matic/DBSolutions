@@ -5,11 +5,16 @@ class DistrictForm(forms.ModelForm):
     class Meta:
         model = District
         fields = ['name', 'city']
+        labels = {
+            'name': 'District Name:',
+        }
         widgets = {
             'name': forms.TextInput(attrs={
+                'class': 'form-control',
                 'placeholder': 'Enter district name'
             }),
             'city': forms.TextInput(attrs={
+                'class': 'form-control',
                 'placeholder': 'Enter city'
             })
         }
@@ -17,15 +22,19 @@ class DistrictForm(forms.ModelForm):
 class BuildingForm(forms.ModelForm):
     class Meta:
         model = Building
-        fields = ['name', 'street', 'district']
+        fields = ['name', 'street']
+        labels = {
+            'name': 'Building Name:'
+        }
         widgets = {
             'name': forms.TextInput(attrs={
+                'class': 'form-control',
                 'placeholder': 'Enter building name'
             }),
             'street': forms.TextInput(attrs={
+                'class': 'form-control',
                 'placeholder': 'Enter street'
             }),
-            'district': forms.Select()
         }
 
 class VenueForm(forms.ModelForm):
