@@ -84,11 +84,16 @@ class AmenityForm(forms.ModelForm):
     class Meta:
         model = Amenity
         fields = ['type', 'description']
+        labels = {
+            'type': 'Amenity Type:',
+		}
         widgets = {
             'type': forms.TextInput(attrs={
+                'class': 'form-control',
                 'placeholder': 'Enter amenity type'
             }),
             'description': forms.Textarea(attrs={
+                'class': 'form-control',
                 'placeholder': 'Enter amenity description...'
             }),
         }

@@ -2,15 +2,35 @@
 {% load static %}
 
 {% block content %}
-    <ul>
-        <h2> Lorem Ipsum </h2>
-    </ul>
-    <h2>Add Form</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ amenity_form.as_p }}
-        <div class="submit-btn">
-            <button type="Submit">Create Amenity</button>
+  <div class="container py-4">
+    <div class="card">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div class="d-flex gap-3">
+            <div class="d-flex align-items-center justify-content-center rounded p-3" style="background-color: #e8f0fe; width: 60px; height: 60px;">
+              <i class="bi bi-door-open-fill text-primary fs-4"></i>
+            </div>
+            <div>
+              <h2 class="mb-0">Add New Amenity</h2>
+              <p class="text-muted mb-0">Add a new amenity to be placed within the different venues.</p>
+            </div>
+          </div>
         </div>
-    </form>
+        <hr class="mb-4">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label class="form-label fw-bold text-uppercase text-secondary small">Amenity Details</label>
+            <div>
+              {{ amenity_form.as_p }}
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="bi bi-check-lg"></i> Add Amenity
+            </button>
+          </div>
+        </form>
+    </div>
+  </div>
 {% endblock %}

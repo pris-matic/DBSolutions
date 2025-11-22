@@ -172,11 +172,6 @@ def add_amenity(request):
         'amenity_form': form
     })
 
-def delete_venue_amenity(request, venue_id, amenity_id):
-    if request.method == 'POST':
-        VenueAmenity.objects.filter(venue_id=venue_id, amenity_id=amenity_id).delete()
-    return redirect('buildings_and_venues:detailed_venue', id=venue_id)
-
 def edit_venue_amenity(request, venue_id, amenity_id):
     venue_amenity = VenueAmenity.objects.get(venue_id=venue_id, amenity_id=amenity_id)
     if request.method == 'POST':

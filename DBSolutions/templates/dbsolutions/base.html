@@ -48,6 +48,9 @@
 				<li class="nav-item">
 					<a class="nav-link {% if request.resolver_match.url_name == 'add_venue' %}active{% endif %}" href="{% url 'buildings_and_venues:add_venue' %}">Add Venue</a>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link {% if request.resolver_match.url_name == 'add_amenity' %}active{% endif %}" href="{% url 'buildings_and_venues:add_amenity' %}">Add Amenity</a>
+				</li>
 			</ul>
 		</div>
 	</div>
