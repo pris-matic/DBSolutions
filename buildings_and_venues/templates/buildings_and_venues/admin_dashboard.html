@@ -5,10 +5,13 @@
   <div class="container py-4">
     <h2 class="mb-4">Buildings and Venues</h2>
     <div class="card p-3 mb-4 bg-light border-0">
+      <!-- This form section serves as a way to filter out the results shown, since it will show ALL. In a large dataset, it will be a pain to scroll 
+           so the filters will make it possible to limit searches -->
       <form method="get" class="row g-2">
         <div class="col-6">
           <input class="form-control" type="text" name="search" placeholder="Search buildings or venues..." value="{{ request.GET.search }}">
         </div>
+        <!-- The 'selected' in the if statements make the current filter chosen stay so that users will know what the filter applied is -->
         <div class="col-2">
           <select class="form-select" name="city">
             <option value="">All Cities</option>
@@ -30,6 +33,7 @@
         </div>
       </form>
     </div>
+    <!-- It simply iterates through each building and shows all the venues under it -->
     {% for building in buildings %}
       <div class="card mb-4">
         <div class="card-body">
@@ -41,17 +45,15 @@
               <div>
                 <h3 class="fw-semibold mb-1">{{ building.name }}</h3>
                 <div class="text-muted">
-                  <i class="bi bi-geo-alt me-1"></i>
+                  <i class="bi bi-geo-alt"></i>
                   {{ building.street }}, {{ building.district.name }}, {{ building.district.city }}
-                  
-                  <span class="badge bg-light text-secondary border ms-2">
-                    {{ building.venues.count }} venues
-                  </span>
+                  <p class="badge bg-light text-secondary border ms-2 mb-0">{{ building.venues.count }} venues</p>
                 </div>
               </div>
             </div>
-            <a href="#" class="text-decoration-none text-primary fw-semibold">
-              <i class="bi bi-pencil-square"></i> Edit
+            <!-- TODO: Implement editing a building, just copy template of edit_venue and tweak it -->
+            <a href="" class="btn btn-outline-primary">
+              <i class="bi bi-pencil-square"></i> Edit Building
             </a>
           </div>
           <hr>
@@ -65,8 +67,8 @@
                       <h4 class="fw-semibold">{{ venue.name }}</h4>
                       <p class="text-muted mb-2">Type: {{ venue.type }}</p>
                       <div class="d-flex gap-3 text-secondary small">
-                        <span><i class="bi bi-people"></i> {{ venue.capacity }} people</span>
-                        <span><i class="bi bi-square"></i> {{ venue.venue_floor_area }} sqm</span> 
+                        <p class="mb-0"><i class="bi bi-people"></i> {{ venue.capacity }} people</p>
+                        <p class="mb-0"><i class="bi bi-aspect-ratio"></i> {{ venue.venue_floor_area }} sqm</p> 
                       </div>
                     </div>
                     {% if venue.under_renovation %}

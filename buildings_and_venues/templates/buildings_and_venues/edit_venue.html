@@ -4,12 +4,13 @@
 {% block content %}
   <div class="container py-4">
     <div class="mb-4">
-      <a href="{% url 'buildings_and_venues:detailed_venue' venue.id %}" class="text-decoration-none text-muted hover-primary">
+      <a href="{% url 'buildings_and_venues:detailed_venue' venue.id %}" class="text-decoration-none text-muted">
         <i class="bi bi-arrow-left me-1"></i> Back to Venue
       </a>
     </div>
-    <div class="card mb-4">
+    <div class="card">
       <div class="card-body p-4">
+        <!-- Header section containing venue chosen, its address, and an icon -->
         <div class="d-flex justify-content-between align-items-start mb-4">
           <div class="d-flex gap-3">
             <div class="d-flex align-items-center justify-content-center rounded p-3" style="background-color: #e8f0fe; width: 60px; height: 60px;">
@@ -25,6 +26,7 @@
           </div>
         </div>
         <hr class="mb-4">
+        <!-- Actual form section, contains the current information and can now be updated -->
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="mb-4">

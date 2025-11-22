@@ -5,6 +5,7 @@
   <div class="container py-4">
     <div class="card">
       <div class="card-body p-4">
+        <!-- Header section containing the page title, a short guide/description, and an icon -->
         <div class="d-flex align-items-center gap-3 mb-4">
           <div class="d-flex gap-3">
             <div class="d-flex align-items-center justify-content-center rounded p-3" style="background-color: #e8f0fe; width: 60px; height: 60px;">
@@ -17,6 +18,7 @@
           </div>
         </div>
         <hr class="mb-4">
+        <!-- Actual form section -->
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="mb-4">
