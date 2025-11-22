@@ -67,6 +67,21 @@ def add_building(request):
         'building_form': building_form,
     })
 
+def edit_building(request, id):
+    building = Building.objects.get(id=id)
+    if request.method == 'POST':
+        form = BuildingForm(request.POST, instance=building)
+        if form.is_valid():
+            form.save()
+            return redirect('buildings_and_venues:admin_dashboard')
+    else:
+        form = BuildingForm(instance=building)
+    
+    return render(request, 'buildings_and_venues/edit_building.html', {
+        'building_form': form,
+        'building': building
+    })
+
 def add_venue(request):
     buildings = Building.objects.all()
     amenities = Amenity.objects.all()
