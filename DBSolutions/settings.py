@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'buildings_and_venues',
+    'user_management',
 ]
 
 MIDDLEWARE = [
