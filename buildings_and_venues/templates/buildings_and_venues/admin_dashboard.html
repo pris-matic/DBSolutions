@@ -52,7 +52,7 @@
               </div>
             </div>
             <!-- TODO: Implement editing a building, just copy template of edit_venue and tweak it -->
-            <a href="" class="btn btn-outline-primary">
+            <a href="{% url 'buildings_and_venues:edit_building' building.id %}" class="btn btn-outline-primary">
               <i class="bi bi-pencil-square"></i> Edit Building
             </a>
           </div>
