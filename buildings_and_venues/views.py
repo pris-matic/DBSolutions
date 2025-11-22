@@ -108,7 +108,12 @@ def edit_venue(request, id):
     if request.method == 'POST':
         form = VenueForm(request.POST, instance=venue)
         if form.is_valid():
-            form.save()
+            updated_venue = form.save(commit=False)
+            if request.POST.get('under_renovation') == 'yes':
+                venue.under_renovation = True
+            else:
+                venue.under_renovation = False
+            updated_venue.save()
             return redirect('buildings_and_venues:detailed_venue', id=id)
     else:
         form = VenueForm(instance=venue)
