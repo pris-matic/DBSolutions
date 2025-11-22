@@ -101,9 +101,8 @@ class AmenityForm(forms.ModelForm):
 class VenueAmenityForm(forms.ModelForm):
     class Meta:
         model = VenueAmenity
-        fields = ['venue', 'amenity', 'quantity']
+        fields = ['amenity', 'quantity']
         widgets = {
-            'venue': forms.Select(),
             'amenity': forms.Select(),
             'quantity': forms.NumberInput(attrs={
                 'min': 1   
