@@ -124,7 +124,6 @@ def edit_venue(request, id):
     })
 
 def detailed_venue(request, id=1):
-    amenities = Amenity.objects.all()
     chosen_venue = Venue.objects.get(id=id)
     neighboring_venues = Venue.objects.filter(building=chosen_venue.building)
     venue_amenities = VenueAmenity.objects.filter(venue=chosen_venue)
@@ -154,7 +153,6 @@ def detailed_venue(request, id=1):
         'venue': chosen_venue,
         'neighboring_venues': neighboring_venues,
         'venue_amenities': venue_amenities,
-        'amenities': amenities,
         'amenity_form': amenity_form,
         'venue_amenity_form': venue_amenity_form
     })
@@ -172,17 +170,53 @@ def add_amenity(request):
         'amenity_form': form
     })
 
-def edit_venue_amenity(request, venue_id, amenity_id):
-    venue_amenity = VenueAmenity.objects.get(venue_id=venue_id, amenity_id=amenity_id)
+def venue_amenities(request, venue_id):
+    venue = Venue.objects.get(id=venue_id)
+    current_amenities = VenueAmenity.objects.filter(venue=venue)
+    amenities = Amenity.objects.all()
+
     if request.method == 'POST':
-        form = VenueAmenityForm(request.POST, instance=venue_amenity)
-        if form.is_valid():
-            form.save()
-            return redirect('buildings_and_venues:detailed_venue', id=venue_id)
+        action = request.POST.get('action')
+
+        if action == 'add':
+            form = VenueAmenityForm(request.POST)
+            
+            if form.is_valid():
+                venueamenity = form.save(commit=False)
+                existing_amenity = VenueAmenity.objects.filter(venue=venue, amenity=venueamenity.amenity).first()
+                
+                if existing_amenity:
+                    existing_amenity.quantity += venueamenity.quantity
+                    existing_amenity.save()
+                else:
+                    venueamenity.venue = venue
+                    venueamenity.save()
+                
+                return redirect('buildings_and_venues:venue_amenities', venue_id=venue_id)
+
+        elif action == 'decrease':
+            amenity_id = request.POST.get('amenity')
+            chosen_amenity = VenueAmenity.objects.filter(venue=venue, amenity_id=amenity_id).first()
+            if chosen_amenity.quantity > 1:
+                chosen_amenity.quantity -= 1
+                chosen_amenity.save()
+            
+            return redirect('buildings_and_venues:venue_amenities', venue_id=venue_id)
+
+        elif action == 'delete':
+            amenity_id = request.POST.get('amenity')
+            chosen_amenity = VenueAmenity.objects.filter(venue=venue, amenity_id=amenity_id).first()
+            chosen_amenity.delete()
+
+            return redirect('buildings_and_venues:venue_amenities', venue_id=venue_id)
+            
+            
     else:
-        form = VenueAmenityForm(instance=venue_amenity)
-    
-    return render(request, 'buildings_and_venues/edit_venue_amenity.html', {
-        'form': form,
-        'venue_amenity': venue_amenity
+        form = VenueAmenityForm()
+
+    return render(request, 'buildings_and_venues/venue_amenities.html', {
+        'venue': venue,
+        'current_amenities': current_amenities,
+        'amenities': amenities
+        
     })
