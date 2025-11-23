@@ -88,7 +88,7 @@ def add_venue(request):
     if request.method == 'POST':
         chosen_building_id = request.POST.get('building')
         chosen_building = Building.objects.get(id=chosen_building_id)
-        form = VenueForm(request.POST)
+        form = VenueForm(request.POST, building=chosen_building)
         if form.is_valid():
             venue = form.save(commit=False)
             venue.building = chosen_building
@@ -121,7 +121,7 @@ def add_venue(request):
 def edit_venue(request, id):
     venue = Venue.objects.get(id=id)
     if request.method == 'POST':
-        form = VenueForm(request.POST, instance=venue)
+        form = VenueForm(request.POST, instance=venue, building=venue.building)
         if form.is_valid():
             updated_venue = form.save(commit=False)
             if request.POST.get('under_renovation') == 'yes':
@@ -131,7 +131,7 @@ def edit_venue(request, id):
             updated_venue.save()
             return redirect('buildings_and_venues:detailed_venue', id=id)
     else:
-        form = VenueForm(instance=venue)
+        form = VenueForm(instance=venue, building=venue.building)
     
     return render(request, 'buildings_and_venues/edit_venue.html', {
         'venue_form': form,
