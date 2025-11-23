@@ -80,6 +80,31 @@ class VenueForm(forms.ModelForm):
             }),
         }
 
+    def __init__(self, *args, **kwargs):
+        building = kwargs.pop('building', None)  # Pass building from view
+        super().__init__(*args, **kwargs)
+        
+        # If editing existing venue, get building from instance
+        if self.instance and self.instance.pk and hasattr(self.instance, 'building'):
+            building = self.instance.building
+        
+        # store building for validation later
+        if building:
+            self.building = building
+    
+    def clean_floor(self):
+        floor = self.cleaned_data.get('floor')
+        
+        # Server-side validation
+        if hasattr(self, 'building') and floor:
+            if floor > self.building.num_floors:
+                raise forms.ValidationError(
+                    f'Floor number cannot exceed {self.building.num_floors} '
+                    f'(selected building has only {self.building.num_floors} floors).'
+                )
+        
+        return floor
+
 class AmenityForm(forms.ModelForm):
     class Meta:
         model = Amenity
