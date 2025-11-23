@@ -3,6 +3,24 @@
 
 {% block content %}
   <div class="container py-4">
+
+    {% if venue_form.non_field_errors %}
+      <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+        <div class="d-flex align-items-start">
+          <i class="bi bi-exclamation-triangle-fill me-2 mt-1"></i>
+          <div>
+            <strong>Form Errors:</strong>
+            <ul class="mb-0 mt-1">
+              {% for error in venue_form.non_field_errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+    
     <div class="card">
       <div class="card-body p-4">
         <!-- Header section containing the page title, a short guide/description, and an icon -->
@@ -34,7 +52,27 @@
           <div class="mb-4">
             <label class="form-label fw-bold text-uppercase text-secondary small">Step 2: Venue Details</label>
             <div>
-              {{ venue_form.as_p }}
+              {% for field in venue_form %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}" class="form-label">
+                    {{ field.label }}
+                  </label>
+                  {% if field.errors %}
+                    {{ field }}
+                    <div class="invalid-feedback d-block">
+                      <i class="bi bi-exclamation-circle me-1"></i>
+                      {% for error in field.errors %}
+                        {{ error }}
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ field }}
+                  {% endif %}
+                  {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                  {% endif %}
+                </div>
+              {% endfor %}
             </div>
             <div class="d-flex align-items-center p-3 border rounded mt-3 bg-white">
               <!-- Opted to use a switch to make it look better, manual handling done which is why I removed it from the VenueForm -->
