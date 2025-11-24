@@ -36,6 +36,10 @@ def admin_dashboard(request):
 
 def add_building(request):
     districts = District.objects.all()
+    
+    district_form = DistrictForm(prefix='district')
+    building_form = BuildingForm(prefix='building')
+    
     if request.method == 'POST':
         district_option = request.POST.get('district_option')
         if district_option == 'new':
@@ -49,18 +53,15 @@ def add_building(request):
                     building.save()
                     return redirect('buildings_and_venues:admin_dashboard')
         else:
+            building_form = BuildingForm(request.POST, prefix='building')
             chosen_district_id = request.POST.get('district')
             chosen_district = District.objects.get(id=chosen_district_id)
-            building_form = BuildingForm(request.POST, prefix='building')
             if building_form.is_valid():
                 building = building_form.save(commit=False)
                 building.district = chosen_district
                 building.save()
                 return redirect('buildings_and_venues:admin_dashboard')
-    else:
-        district_form = DistrictForm(prefix='district')
-        building_form = BuildingForm(prefix='building')
-    
+
     return render(request, 'buildings_and_venues/add_building.html', {
         'districts': districts,
         'district_form': district_form,
