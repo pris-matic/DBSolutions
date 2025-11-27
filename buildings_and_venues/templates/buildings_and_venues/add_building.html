@@ -50,7 +50,10 @@
 						<!-- Section for creating a new district, has style display none since it will be hidden depending on the input -->
 						<div id="new-district-section" style="display: none;">
 							<div>
-								{{ district_form.as_p }}
+								<label class="form-label" for="district-name">District Name:</label>
+								<input class="form-control" type="text" name="district-name" id="district-name" placeholder="Enter district name">
+								<label class="form-label" for="district-city">City:</label>
+								<input class="form-control" type="text" name="district-city" id="district-city" placeholder="Enter city">
 							</div>
 						</div>
 					</div>
@@ -75,16 +78,23 @@
 		const existingSection = document.getElementById('existing-district-section');
 		const newSection = document.getElementById('new-district-section');
 		const existSelect = document.getElementById('district');
+		const newDistrictName = document.getElementById('district-name');
+		const newDistrictCity = document.getElementById('district-city');
 		// This if else statement toggles the display of showing the existing district dropdown or the 
 		// new district form fields
 		if (option === 'new') {
 			existingSection.style.display = 'none';
 			newSection.style.display = 'block';
 			existSelect.required = false;
+			newDistrictName.required = true;
+			newDistrictCity.required = true;
 		} 
 		else {
 			existingSection.style.display = 'block';
 			newSection.style.display = 'none';
+			existSelect.required = true;
+			newDistrictName.required = false;
+			newDistrictCity.required = false;
 		}
 	}
 
