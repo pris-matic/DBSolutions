@@ -4,6 +4,7 @@ from .models import District, Building, Venue, Amenity, VenueAmenity
 from .forms import DistrictForm, BuildingForm, VenueForm, AmenityForm, VenueAmenityForm, CustomSignupForm, CustomLoginForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 def homepage(request):
     return render(request,'buildings_and_venues/homepage.html')
@@ -17,7 +18,8 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('buildings_and_venues:homepage')
+                next_url = request.GET.get('next', settings.LOGIN_REDIRECT_URL)
+                return redirect(next_url)
     else:
         form = CustomLoginForm()
     
@@ -37,7 +39,7 @@ def signup_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('buildings_and_venues:homepage')
+    return redirect(settings.LOGOUT_REDIRECT_URL)
 
 @login_required
 def admin_dashboard(request):
