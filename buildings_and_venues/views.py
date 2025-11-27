@@ -136,16 +136,6 @@ def add_venue(request):
                 venue.under_renovation = False
             venue.save()
 
-            # Comment out for now since handle this later on after data has been added 
-            # for amenity in amenities:
-            #     quantity = request.POST.get(f'quantity_{amenity.id}')
-            #     if int(quantity) > 0:
-            #         VenueAmenity.objects.create(
-            #             venue=venue,
-            #             amenity=amenity,
-            #             quantity=quantity
-            #         )
-
             return redirect('buildings_and_venues:detailed_venue', id=venue.id)
     else:
         form = VenueForm()
