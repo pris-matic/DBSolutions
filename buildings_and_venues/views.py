@@ -1,11 +1,45 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from .models import District, Building, Venue, Amenity, VenueAmenity
-from .forms import DistrictForm, BuildingForm, VenueForm, AmenityForm, VenueAmenityForm
+from .forms import DistrictForm, BuildingForm, VenueForm, AmenityForm, VenueAmenityForm, CustomSignupForm, CustomLoginForm
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
 
 def homepage(request):
     return render(request,'buildings_and_venues/homepage.html')
 
+def login_view(request):
+    if request.method == 'POST':
+        form = CustomLoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('buildings_and_venues:homepage')
+    else:
+        form = CustomLoginForm()
+    
+    return render(request, 'registration/login.html', {'form': form})
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = CustomSignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('buildings_and_venues:homepage')
+    else:
+        form = CustomSignupForm()
+    
+    return render(request, 'registration/signup.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('buildings_and_venues:homepage')
+
+@login_required
 def admin_dashboard(request):
     buildings = Building.objects.select_related('district').prefetch_related('venues').all()
     cities = District.objects.values_list('city', flat=True).distinct().order_by('city')
@@ -34,6 +68,7 @@ def admin_dashboard(request):
         'current_district': district_filter
     })
 
+@login_required
 def add_building(request):
     districts = District.objects.all()
     if request.method == 'POST':
@@ -67,6 +102,7 @@ def add_building(request):
         'building_form': building_form,
     })
 
+@login_required
 def edit_building(request, id):
     building = Building.objects.get(id=id)
     if request.method == 'POST':
@@ -82,6 +118,7 @@ def edit_building(request, id):
         'building': building
     })
 
+@login_required
 def add_venue(request):
     buildings = Building.objects.all()
     amenities = Amenity.objects.all()
@@ -118,6 +155,7 @@ def add_venue(request):
         'amenities': amenities
     })
 
+@login_required
 def edit_venue(request, id):
     venue = Venue.objects.get(id=id)
     if request.method == 'POST':
@@ -138,6 +176,7 @@ def edit_venue(request, id):
         'venue': venue
     })
 
+@login_required
 def detailed_venue(request, id=1):
     chosen_venue = Venue.objects.get(id=id)
     neighboring_venues = Venue.objects.filter(building=chosen_venue.building)
@@ -172,6 +211,7 @@ def detailed_venue(request, id=1):
         'venue_amenity_form': venue_amenity_form
     })
 
+@login_required
 def add_amenity(request):
     if request.method == 'POST':
         form = AmenityForm(request.POST)
@@ -185,6 +225,7 @@ def add_amenity(request):
         'amenity_form': form
     })
 
+@login_required
 def venue_amenities(request, venue_id):
     venue = Venue.objects.get(id=venue_id)
     current_amenities = VenueAmenity.objects.filter(venue=venue)
