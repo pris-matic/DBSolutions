@@ -44,6 +44,13 @@ class BuildingForm(forms.ModelForm):
                 'min': 1
 			})
         }
+    def __init__(self, *args, **kwargs):
+        super(BuildingForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        # Business rule - prevents floors from being edited once building is created
+        if instance and instance.pk:
+            self.fields['num_floors'].widget.attrs['disabled'] = True
+            self.fields['num_floors'].widget.attrs['readonly'] = True
 
 class VenueForm(forms.ModelForm):
     class Meta:
