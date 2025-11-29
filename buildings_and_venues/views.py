@@ -31,7 +31,8 @@ def signup_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('buildings_and_venues:homepage')
+            next_url = request.GET.get('next', settings.LOGIN_REDIRECT_URL)
+            return redirect(next_url)
     else:
         form = CustomSignupForm()
     
