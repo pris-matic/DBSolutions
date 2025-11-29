@@ -6,9 +6,6 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
-def homepage(request):
-    return render(request,'buildings_and_venues/homepage.html')
-
 def login_view(request):
     if request.method == 'POST':
         form = CustomLoginForm(request, data=request.POST)
