@@ -3,9 +3,14 @@
 
 {% block content %}
   <div class="container py-4">
+    <div class="mb-4">
+      <a href="{% url 'buildings_and_venues:detailed_venue' venue.id %}" class="text-decoration-none text-muted">
+        <i class="bi bi-arrow-left me-1"></i> Back to Venue
+      </a>
+    </div>
 
     {% if venue_form.non_field_errors %}
-      <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <div class="d-flex align-items-start">
           <i class="bi bi-exclamation-triangle-fill me-2 mt-1"></i>
           <div>
@@ -20,37 +25,30 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     {% endif %}
-    
+
     <div class="card">
       <div class="card-body p-4">
-        <!-- Header section containing the page title, a short guide/description, and an icon -->
-        <div class="d-flex align-items-center gap-3 mb-4">
-          <div class="d-flex align-items-center justify-content-center rounded p-3" style="background-color: #e8f0fe; width: 60px; height: 60px;">
-            <i class="bi bi-door-open-fill text-primary fs-4"></i>
-          </div>
-          <div>
-            <h2 class="mb-0">Add New Venue</h2>
-            <p class="text-muted mb-0">Register a room or event space within a building.</p>
+        <!-- Header section containing venue chosen, its address, and an icon -->
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div class="d-flex gap-3">
+            <div class="d-flex align-items-center justify-content-center rounded p-3" style="background-color: #e8f0fe; width: 60px; height: 60px;">
+              <i class="bi bi-door-open-fill text-primary fs-4"></i>
+            </div>
+            <div>
+              <h2 class="fw-semibold mb-0">{{ venue.name }}</h2>
+              <div class="text-muted">
+                <i class="bi bi-building"></i>
+                {{ venue.building.name }} | {{ venue.building.district.name }}, {{ venue.building.district.city }}
+              </div>
+            </div>
           </div>
         </div>
         <hr class="mb-4">
-        <!-- Actual form section -->
+        <!-- Actual form section, contains the current information and can now be updated -->
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
-          <div class="bg-light p-4 rounded-3 mb-4">
-            <!-- Opted to handle building selection like this to be able to highlight it and emphasize that it is the most important thing to select -->
-            <label for="building" class="form-label fw-bold text-uppercase text-secondary small">Step 1: Select Building</label>
-            <select name="building" id="building" class="form-select" required>
-              <option value="">Choose a building...</option>
-              {% for building in buildings %}
-                <option value="{{ building.id }}">
-                  {{ building.name }}
-                </option>
-              {% endfor %}
-            </select>
-          </div>
           <div class="mb-4">
-            <label class="form-label fw-bold text-uppercase text-secondary small">Step 2: Venue Details</label>
+            <label class="form-label fw-bold text-uppercase text-secondary small">Venue Details</label>
             <div>
               {% for field in venue_form %}
                 <div class="mb-3">
@@ -75,22 +73,20 @@
               {% endfor %}
             </div>
             <div class="d-flex align-items-center p-3 border rounded mt-3 bg-white">
-              <!-- Opted to use a switch to make it look better, manual handling done which is why I removed it from the VenueForm -->
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" name="under_renovation" value="yes" id="under_renovation">
+                <input class="form-check-input" type="checkbox" name="under_renovation" value="yes" id="under_renovation" {% if venue.under_renovation %}checked{% endif %}> 
                 <label class="form-check-label fw-semibold ms-2" for="under_renovation">
-                  Mark this venue as "Under Renovation"
+                  Under Renovation
                 </label>
               </div>
             </div>
           </div>
           <div class="d-flex flex-column">
             <button type="submit" class="btn btn-primary btn-lg">
-              <i class="bi bi-check-lg"></i> Create Venue
+              <i class="bi bi-hammer"></i> Edit Venue
             </button>
           </div>
         </form>
-      </div>
     </div>
   </div>
 {% endblock %}

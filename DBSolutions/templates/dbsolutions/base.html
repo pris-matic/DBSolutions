@@ -27,28 +27,112 @@
 		.nav-tabs {
 			border-bottom: 1px solid #e5e7eb;
 		}
+
+		.auth-button-container {
+            padding-bottom: 0.5rem;
+        }
+
+		.auth-btn-login {
+            color: #374151;
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            padding: 0.375rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .auth-btn-login:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+        
+        .auth-btn-logout {
+            color: #6b7280;
+            background: transparent;
+            border: 1px solid #e5e7eb;	
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+        
+        .auth-btn-logout:hover {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        
+        .user-display {
+            color: #6b7280;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+        }
 	</style>
 </head>
 <body>
 	<!-- Navbar -->
 	<div class="bg-white border-bottom">
 		<div class="container-fluid px-5 py-3">
-			<!-- Header with Title and Action Buttons -->
 			<div class="d-flex justify-content-between align-items-center mb-3">
-				<h1 class="h2 fw-bold text-dark mb-0">State Spaces</h1>
+				<h1 class="h2 fw-bold mb-0">
+					<!-- disabled redirect to 'customer homepage' -->
+					<a href="" class="text-dark text-decoration-none">State Spaces</a>
+				</h1>
 			</div>
 			<!-- Tab Navigation -->
-			<ul class="nav nav-tabs">
-				<li class="nav-item">
-					<a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" href="{% url 'buildings_and_venues:admin_dashboard' %}">Dashboard</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link {% if request.resolver_match.url_name == 'add_building' %}active{% endif %}" href="{% url 'buildings_and_venues:add_building' %}">Add Building</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link {% if request.resolver_match.url_name == 'add_venue' %}active{% endif %}" href="{% url 'buildings_and_venues:add_venue' %}">Add Venue</a>
-				</li>
-			</ul>
+			<div class="d-flex justify-content-between align-items-end border-bottom" style="border-color: #e5e7eb !important;">
+				{% if user.is_authenticated %}
+					<ul class="nav nav-tabs">
+						<li class="nav-item">
+							<a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" href="{% url 'buildings_and_venues:admin_dashboard' %}">Dashboard</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% if request.resolver_match.url_name == 'add_building' %}active{% endif %}" href="{% url 'buildings_and_venues:add_building' %}">Add Building</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% if request.resolver_match.url_name == 'add_venue' %}active{% endif %}" href="{% url 'buildings_and_venues:add_venue' %}">Add Venue</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% if request.resolver_match.url_name == 'add_amenity' %}active{% endif %}" href="{% url 'buildings_and_venues:add_amenity' %}">Add Amenity</a>
+						</li>
+					</ul>
+				{% else %}
+					<div></div>
+				{% endif %}
+				<!-- Log In / Log out button -->
+				<div class="auth-button-container">
+					{% if user.is_authenticated %}
+						<div class="d-flex align-items-center gap-2">
+							<span class="user-display">
+								<i class="bi bi-person-circle me-1"></i>{{ user.username }}
+							</span>
+							<a href="{% url 'buildings_and_venues:logout' %}" class="auth-btn-logout">
+								<i class="bi bi-box-arrow-right me-1"></i>Logout
+							</a>
+						</div>
+					{% else %}
+						<a href="{% url 'buildings_and_venues:login' %}" class="auth-btn-login">
+							<i class="bi bi-box-arrow-in-right me-1"></i>Login
+						</a>
+					{% endif %}
+				</div>
+			</div>
 		</div>
 	</div>
 	<!-- Content -->

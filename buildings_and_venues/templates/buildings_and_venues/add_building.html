@@ -5,6 +5,7 @@
 	<div class="container py-4">
 		<div class="card">
 			<div class="card-body p-4">
+				<!-- Header section containing the page title, a short guide/description, and an icon -->
 				<div class="d-flex align-items-center gap-3 mb-4">
 					<div class="d-flex align-items-center justify-content-center rounded p-3" style="background-color: #e8f0fe; width: 60px; height: 60px;">
 						<i class="bi bi-building-add text-primary fs-4"></i>
@@ -15,11 +16,13 @@
 					</div>
 				</div>
 				<hr class="mb-4">
+				<!-- Actual form section -->
 				<form method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 					<div class="bg-light p-4 rounded-3 mb-4">
 						<label class="form-label fw-bold text-uppercase text-secondary small">Step 1: Location</label>
 						<div class="d-flex gap-4 mt-2 mb-3">
+							<!-- Used name attributes to allow our view to get the values to make it dynamic -->
 							<div class="form-check">
 								<input class="form-check-input" type="radio" name="district_option" value="existing" id="radio-existing" checked onchange="toggleDistrictFields()">
 								<label class="form-check-label" for="radio-existing">
@@ -44,10 +47,13 @@
 								{% endfor %}
 							</select>
 						</div>
-						<!-- Section for creating a new district -->
+						<!-- Section for creating a new district, has style display none since it will be hidden depending on the input -->
 						<div id="new-district-section" style="display: none;">
 							<div>
-								{{ district_form.as_p }}
+								<label class="form-label" for="district-name">District Name:</label>
+								<input class="form-control" type="text" name="district-name" id="district-name" placeholder="Enter district name">
+								<label class="form-label" for="district-city">City:</label>
+								<input class="form-control" type="text" name="district-city" id="district-city" placeholder="Enter city">
 							</div>
 						</div>
 					</div>
@@ -65,23 +71,30 @@
 				</form>
 			</div>
 		</div>
-</div>
+	</div>
 	<script>
 	function toggleDistrictFields() {
 		const option = document.querySelector('input[name="district_option"]:checked').value;
 		const existingSection = document.getElementById('existing-district-section');
 		const newSection = document.getElementById('new-district-section');
 		const existSelect = document.getElementById('district');
+		const newDistrictName = document.getElementById('district-name');
+		const newDistrictCity = document.getElementById('district-city');
 		// This if else statement toggles the display of showing the existing district dropdown or the 
-		// new district form fields.
+		// new district form fields
 		if (option === 'new') {
 			existingSection.style.display = 'none';
 			newSection.style.display = 'block';
 			existSelect.required = false;
+			newDistrictName.required = true;
+			newDistrictCity.required = true;
 		} 
 		else {
 			existingSection.style.display = 'block';
 			newSection.style.display = 'none';
+			existSelect.required = true;
+			newDistrictName.required = false;
+			newDistrictCity.required = false;
 		}
 	}
 

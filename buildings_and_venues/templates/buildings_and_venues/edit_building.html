@@ -1,0 +1,46 @@
+{% extends 'DBSolutions/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container py-4">
+    <div class="mb-4">
+      <a href="{% url 'buildings_and_venues:admin_dashboard' %}" class="text-decoration-none text-muted">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+      </a>
+    </div>
+    <div class="card">
+      <div class="card-body p-4">
+        <!-- Header section containing building chosen, its address, and an icon -->
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div class="d-flex gap-3">
+            <div class="d-flex align-items-center justify-content-center rounded p-3" style="background-color: #e8f0fe; width: 60px; height: 60px;">
+              <i class="bi bi-building text-primary fs-4"></i>
+            </div>
+            <div>
+              <h2 class="fw-semibold mb-0">{{ building.name }}</h2>
+              <div class="text-muted">
+                <i class="bi bi-geo-alt"></i>
+                {{ building.district.name }}, {{ building.district.city }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="mb-4">
+        <!-- Actual form section, contains the current information and can now be updated -->
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-4">
+            <label class="form-label fw-bold text-uppercase text-secondary small">Building Details</label>
+            <div>
+              {{ building_form.as_p }}
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <button type="submit" class="btn btn-primary btn-lg">
+              <i class="bi bi-hammer"></i> Edit Building
+            </button>
+          </div>
+        </form>
+    </div>
+  </div>
+{% endblock %}

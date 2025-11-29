@@ -1,0 +1,122 @@
+{% extends 'DBSolutions/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container py-4">
+    <div class="mb-4">
+      <a href="{% url 'buildings_and_venues:admin_dashboard' %}" class="text-decoration-none text-muted">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+      </a>
+    </div>
+    <div class="card mb-4">
+      <div class="card-body p-4">
+        <!-- Header section containing venue chosen, its address, and an icon -->
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div class="d-flex gap-3">
+            <div class="d-flex align-items-center justify-content-center rounded p-3" style="background-color: #e8f0fe; width: 60px; height: 60px;">
+              <i class="bi bi-door-open-fill text-primary fs-4"></i>
+            </div>
+            <div>
+              <h2 class="fw-semibold mb-0">{{ venue.name }}</h2>
+              <div class="text-muted">
+                <i class="bi bi-building"></i>
+                {{ venue.building.name }} | {{ venue.building.district.name }}, {{ venue.building.district.city }}
+              </div>
+            </div>
+          </div>
+          <div class="d-flex gap-2">
+            <a href="{% url 'buildings_and_venues:edit_venue' venue.id %}" class="btn btn-outline-primary">
+              <i class="bi bi-pencil-square"></i> Edit Venue
+            </a>
+            <form method="post">
+              {% csrf_token %}
+              <button class="btn btn-danger">
+                <i class="bi bi-x-lg"></i> Delete Venue
+              </button>
+            </form>
+          </div>
+        </div>
+        <hr>
+        <!-- Venue attributes one by one, with respective icons to make it look better -->
+        <div class="d-flex flex-column list-group">
+          <div class="mb-2">
+            <div class="bg-light p-4 rounded-3">
+              <label class="form-label fw-bold text-uppercase text-secondary small mb-0">Type</label>
+              <p class="fs-5 fw-semibold mb-0 text-dark mt-1">{{ venue.type }}</p>
+            </div>
+          </div>
+          <div class="mb-2">
+            <div class="bg-light p-4 rounded-3">
+              <label class="form-label fw-bold text-uppercase text-secondary small mb-0">Capacity</label>
+              <p class="fs-5 fw-semibold mb-0 text-dark mt-1">
+                <i class="bi bi-people me-2 text-muted"></i>{{ venue.capacity }} people
+              </p>
+            </div>
+          </div>
+          <div class="mb-2">
+            <div class="bg-light p-4 rounded-3">
+              <label class="form-label fw-bold text-uppercase text-secondary small mb-0">Floor</label>
+              <p class="fs-5 fw-semibold mb-0 text-dark mt-1">
+                <i class="bi bi-building-up me-2 text-muted"></i>{{ venue.floor }}F
+              </p>
+            </div>
+          </div>
+          <div class="mb-2">
+            <div class="bg-light p-4 rounded-3">
+              <label class="form-label fw-bold text-uppercase text-secondary small mb-0">Floor Area</label>
+              <p class="fs-5 fw-semibold mb-0 text-dark mt-1">
+                <i class="bi bi-aspect-ratio me-2 text-muted"></i>{{ venue.venue_floor_area }} sqm
+              </p>
+            </div>
+          </div>
+          <div class="mb-2">
+            <div class="bg-light p-4 rounded-3">
+              <label class="form-label fw-bold text-uppercase text-secondary small mb-0">Status</label>
+              <div class="mt-1">
+                {% if venue.under_renovation %}
+                  <div class="text-warning fw-bold fs-5">
+                    <i class="bi bi-wrench me-2"></i> Under Renovation
+                  </div>
+                {% else %}
+                  <div class="text-success fw-bold fs-5">
+                    <i class="bi bi-check-circle-fill me-2"></i> Available
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>  
+    </div>
+    <div class="card">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div class="d-flex gap-3">
+            <h3 class="fw-bold">Amenities</h3>
+          </div>
+          <a href="{% url 'buildings_and_venues:venue_amenities' venue.id %}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil-square"></i> Edit Amenities
+          </a>
+        </div>
+        <!-- Conditional that changes depending if the venue actually has amenities right now or not -->
+        {% if venue_amenities %}
+          <div class="list-group list-group-flush border rounded">
+            {% for amenity in venue_amenities %}
+              <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                <div>
+                  <h6 class="fw-bold mb-1">{{ amenity.amenity.type }} <p class="badge bg-primary bg-opacity-10 text-primary ms-2">Qty: {{ amenity.quantity }}</p></h6>
+                  <p class="text-muted small">{{ amenity.amenity.description }}</p>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-5 text-muted bg-light rounded">
+            <i class="bi bi-box-seam fs-2 mb-2 d-block"></i>
+            <p>No amenities added yet.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
