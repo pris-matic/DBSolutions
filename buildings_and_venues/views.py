@@ -237,7 +237,13 @@ def venue_amenities(request, venue_id):
             chosen_amenity.delete()
 
             return redirect('buildings_and_venues:venue_amenities', venue_id=venue_id)
-            
+        
+        elif action == 'delete_amenity':
+            amenity_id = request.POST.get('amenity')
+            amenity = Amenity.objects.get(id=amenity_id)
+            amenity.delete()
+
+            return redirect('buildings_and_venues:venue_amenities', venue_id=venue_id)
             
     else:
         form = VenueAmenityForm()
