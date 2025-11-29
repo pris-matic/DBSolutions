@@ -1,9 +1,8 @@
 from django.urls import path
-from .views import homepage, admin_dashboard, add_building, add_venue, add_amenity, detailed_venue, edit_venue, venue_amenities, edit_building, login_view, signup_view, logout_view
+from .views import admin_dashboard, add_building, add_venue, add_amenity, detailed_venue, edit_venue, venue_amenities, edit_building, login_view, signup_view, logout_view
 from django.contrib.auth import views
 
 urlpatterns = [
-    path('home/', homepage, name='homepage'),
     path('dashboard/', admin_dashboard, name='admin_dashboard'),
     path('dashboard/add_building/', add_building, name='add_building'),
     path('dashboard/add_venue/', add_venue, name='add_venue'),
