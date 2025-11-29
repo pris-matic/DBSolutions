@@ -24,9 +24,17 @@
               </div>
             </div>
           </div>
-          <a href="{% url 'buildings_and_venues:edit_venue' venue.id %}" class="btn btn-outline-primary">
-            <i class="bi bi-pencil-square"></i> Edit Venue
-          </a>
+          <div class="d-flex gap-2">
+            <a href="{% url 'buildings_and_venues:edit_venue' venue.id %}" class="btn btn-outline-primary">
+              <i class="bi bi-pencil-square"></i> Edit Venue
+            </a>
+            <form method="post">
+              {% csrf_token %}
+              <button class="btn btn-danger">
+                <i class="bi bi-x-lg"></i> Delete Venue
+              </button>
+            </form>
+          </div>
         </div>
         <hr>
         <!-- Venue attributes one by one, with respective icons to make it look better -->
